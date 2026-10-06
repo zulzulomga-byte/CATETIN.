@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F3F4FB">
+<title>Catetin</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Literata:opsz,wght@7..72,400..600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#15173D; --ink2:#5B5E85; --cobalt:#3A36F5; --paper:#F3F4FB; --sheet:#fff;
+  --hl:#FFE53D; --coral:#FF5236; --pink:#FF9CC2;
+  --ui:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --read:"Literata",Georgia,"Times New Roman",serif;
+  --st:env(safe-area-inset-top,0px); --sb:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.4;-webkit-font-smoothing:antialiased}
+body[data-view=record]{background:var(--cobalt)}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-align:inherit}
+input{font:inherit;color:inherit}
+[hidden]{display:none!important}
+h1,h2,h3,p{margin:0}
+:focus-visible{outline:3px solid var(--cobalt);outline-offset:2px;border-radius:6px}
+body[data-view=record] :focus-visible{outline-color:var(--hl)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.screen{max-width:560px;margin:0 auto;padding:calc(var(--st) + 14px) 20px calc(var(--sb) + 120px)}
+.ic{width:44px;height:44px;display:grid;place-items:center;border-radius:50%;flex:none}
+.ic:active{background:rgba(21,23,61,.1)}
+.dock{position:fixed;left:0;right:0;bottom:calc(var(--sb) + 22px);display:flex;justify-content:center;pointer-events:none;z-index:5}
+.dock>*{pointer-events:auto}
+
+/* tombol */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:700;font-size:17px;padding:14px 26px;border-radius:999px;border:2px solid var(--ink);background:#fff;color:var(--ink);box-shadow:4px 4px 0 var(--ink);transition:transform .08s,box-shadow .08s;text-align:center}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--ink)}
+.btn.coral{background:var(--coral)}
+.btn.yellow{background:var(--hl)}
+.btn.ink{background:var(--ink);color:#fff;box-shadow:none}
+.btn.ink:active{transform:none;opacity:.85}
+.btn.big{font-size:20px;padding:17px 34px}
+.btn.small{font-size:15px;padding:9px 18px;box-shadow:3px 3px 0 var(--ink)}
+.btn.wide{grid-column:1/-1}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.btn.plain{border-color:transparent;box-shadow:none;background:transparent}
+
+/* beranda */
+.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:30px;letter-spacing:-.03em}
+.logo i{width:15px;height:15px;border-radius:50%;background:var(--coral);border:2px solid var(--ink);display:block}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 -20px 12px;padding:4px 20px 8px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;display:flex;align-items:center;gap:8px;padding:8px 15px;border:2px solid var(--ink);border-radius:999px;font-weight:600;font-size:15px;background:#fff;white-space:nowrap}
+.chip i{width:10px;height:10px;border-radius:50%;background:var(--c);border:1.5px solid var(--ink);display:block}
+.chip[aria-pressed=true]{background:var(--ink);color:#fff}
+.note{display:block;width:100%;background:var(--hl);border:2px solid var(--ink);border-radius:6px 6px 6px 24px;padding:14px 18px;margin:6px 0 18px;font-weight:600;transform:rotate(-1deg)}
+.note u{display:block;margin-top:4px;font-weight:700}
+.row{display:grid;grid-template-columns:10px 1fr;gap:14px;width:100%;background:var(--sheet);border:2px solid var(--ink);border-radius:14px;padding:14px 16px 14px 12px;margin-bottom:12px}
+.row:active{background:#ECEDFB}
+.row .tab{border-radius:6px;background:var(--c);border:2px solid var(--ink)}
+.rb{display:flex;flex-direction:column;gap:6px;min-width:0}
+.rt{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.rt b{font-size:19px;font-weight:700;line-height:1.2;letter-spacing:-.01em}
+.rm{display:flex;gap:16px;font-size:13.5px;color:var(--ink2);font-weight:500}
+.rp{font-family:var(--read);font-size:14.5px;line-height:1.45;color:rgba(21,23,61,.78);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pill{flex:none;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;border:2px solid var(--ink);line-height:1.3}
+.pill.busy{background:var(--hl)}
+.pill.fail{background:var(--coral)}
+.empty{text-align:center;padding:44px 12px 0}
+.empty svg{width:200px;height:auto;display:block;margin:0 auto 22px}
+.empty h2{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+.empty p{color:var(--ink2);max-width:290px;margin:0 auto}
+
+/* rekam */
+.rec{color:#fff}
+.rec .ic:active{background:rgba(255,255,255,.18)}
+.q{font-size:42px;line-height:1;font-weight:800;letter-spacing:-.03em;margin:18px 0 0}
+.field{width:100%;margin-top:24px;padding:16px 18px;font-size:20px;font-weight:600;background:#fff;color:var(--ink);border:2px solid var(--ink);border-radius:12px;box-shadow:4px 4px 0 var(--ink)}
+.field::placeholder{color:#8C8FB3;font-weight:500}
+.recent{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.cw{border:2px solid #fff;border-radius:999px;padding:8px 15px;font-weight:600;font-size:15px}
+.cw:active{background:rgba(255,255,255,.2)}
+.hint{margin-top:22px;color:rgba(255,255,255,.82);max-width:300px}
+.live{display:flex;flex-direction:column;min-height:100dvh;padding-bottom:calc(var(--sb) + 24px)}
+.state{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px}
+.pulse{width:14px;height:14px;border-radius:50%;background:var(--coral);border:2px solid #fff;animation:pl 1.4s ease-in-out infinite}
+.pulse.off{animation:none;background:transparent}
+@keyframes pl{50%{transform:scale(.6);opacity:.5}}
+.course{font-size:22px;font-weight:700;margin-top:14px;letter-spacing:-.01em}
+.timer{font-size:clamp(44px,15vw,76px);font-weight:800;letter-spacing:-.03em;line-height:1;margin-top:26px;font-variant-numeric:tabular-nums}
+#wave{display:block;width:100%;height:132px;margin:22px 0 8px}
+.info{min-height:24px;color:rgba(255,255,255,.88);font-size:15px}
+.ctrls{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:auto;padding-top:24px}
+
+/* catatan */
+.bar{display:flex;align-items:center;gap:4px;margin:0 -10px}
+.bar h1{flex:1;min-width:0;font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.15;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.meta{display:flex;gap:16px;color:var(--ink2);font-size:14px;font-weight:500;margin:4px 0 0 36px}
+.sc{display:flex;border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:#fff}
+.sc button{flex:1;padding:11px 10px;text-align:center;font-weight:600;font-size:15px}
+.sc button+button{border-left:2px solid var(--ink)}
+.sc [aria-selected=true],.sc [aria-checked=true]{background:var(--ink);color:#fff}
+.sc.tabs{margin:16px 0}
+.banner{border:2px solid var(--ink);border-radius:14px;padding:14px 16px;margin-top:14px;background:#fff;display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+.banner.fail{background:#FFDAD3}
+.prog{width:100%;height:14px;border:2px solid var(--ink);border-radius:999px;overflow:hidden;background:#fff}
+.prog i{display:block;height:100%;background:var(--hl);transition:width .4s}
+.page{position:relative;background-color:var(--sheet);background-image:repeating-linear-gradient(to bottom,transparent 0 31px,rgba(58,54,245,.15) 31px 32px);border:2px solid var(--ink);border-radius:14px;padding:32px 0 0;overflow:hidden}
+.page::before{content:"";position:absolute;top:0;bottom:0;left:70px;width:2px;background:var(--pink)}
+.para{display:grid;grid-template-columns:70px 1fr;margin-bottom:32px}
+.tsb{display:flex;align-items:center;justify-content:center;gap:4px;height:32px;font-size:12.5px;font-weight:700;color:var(--ink2);width:100%}
+.tsb:active{color:var(--cobalt)}
+.txt{font-family:var(--read);font-size:17px;line-height:32px;padding:0 16px 0 16px}
+.seg{cursor:pointer;background:linear-gradient(transparent 50%,var(--hl) 50% 94%,transparent 94%) no-repeat 0 0/0% 100%;transition:background-size .28s ease-out;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.seg.hl{background-size:100% 100%}
+.blank{padding:0 22px 32px 86px;font-family:var(--read);color:var(--ink2);line-height:32px}
+.sheetbox{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:22px 20px}
+.sum h3{font-size:20px;font-weight:800;letter-spacing:-.01em;margin:22px 0 8px}
+.sum h3:first-child{margin-top:0}
+.sum p,.sum li{font-family:var(--read);font-size:16.5px;line-height:1.6}
+.sum ul,.sum ol{margin:0;padding-left:22px}
+.sum li{margin-bottom:6px}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.empty-sum{text-align:center;padding:10px 4px}
+.empty-sum p{margin-bottom:18px;color:var(--ink2)}
+.del{display:block;margin:30px auto 0;color:#C5301A;font-weight:700;padding:12px}
+
+/* pengaturan */
+.fl{margin-top:26px}
+.fl>label,.fl>span{display:block;font-weight:700;font-size:17px;margin-bottom:10px}
+.fl small{display:block;margin-top:8px;color:var(--ink2);font-size:14px}
+.kf{display:flex;gap:8px}
+.kf input{flex:1;min-width:0;padding:13px 14px;border:2px solid var(--ink);border-radius:12px;background:#fff;font-size:16px}
+.kf button{flex:none;padding:0 14px;border:2px solid var(--ink);border-radius:12px;font-weight:600;background:#fff}
+
+/* lain-lain */
+.mini{position:fixed;left:16px;right:16px;bottom:calc(var(--sb) + 16px);max-width:528px;margin:0 auto;background:var(--ink);color:#fff;border-radius:14px;padding:10px 12px 10px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:600;z-index:6}
+.mini .btn{background:#fff;color:var(--ink)}
+#toast{position:fixed;left:50%;bottom:calc(var(--sb) + 104px);transform:translate(-50%,10px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;font-size:15px;max-width:min(92vw,420px);text-align:center;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:20;border:2px solid #fff}
+#toast.on{opacity:1;transform:translate(-50%,0)}
+body[data-view=record] #toast{bottom:calc(var(--sb) + 200px)}
+.scrim{position:fixed;inset:0;background:rgba(21,23,61,.5);z-index:30}
+.sheet{position:fixed;left:0;right:0;bottom:0;background:#fff;border:2px solid var(--ink);border-bottom:0;border-radius:24px 24px 0 0;padding:26px 22px calc(var(--sb) + 22px);z-index:31;max-width:560px;margin:0 auto;animation:up .22s ease-out}
+.sheet p{font-size:19px;font-weight:600;line-height:1.35;margin-bottom:22px}
+.sheet .row2{display:grid;gap:10px}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+</style>
+</head>
+<body data-view="home">
+<div id="app"></div>
+<div class="mini" id="mini" hidden><span id="miniT"></span><button class="btn small" data-act="stopPlay">Berhenti</button></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="sheet-root"></div>
+<audio id="player" preload="none"></audio>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- util ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const pad = n => String(n).padStart(2, '0');
+const fmtClock = t => { t = Math.floor(t); return `${pad(Math.floor(t/3600))}:${pad(Math.floor(t%3600/60))}:${pad(t%60)}`; };
+const fmtStamp = t => { t = Math.floor(t); const h = Math.floor(t/3600), m = Math.floor(t%3600/60), s = t%60; return h ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`; };
+const fmtDur = t => { if (t < 60) return `${Math.round(t)} dtk`; const h = Math.floor(t/3600), m = Math.round(t%3600/60); return h ? `${h} j ${m} mnt` : `${m} mnt`; };
+const DF = new Intl.DateTimeFormat('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
+const TF = new Intl.DateTimeFormat('id-ID', { hour: '2-digit', minute: '2-digit' });
+const DFL = new Intl.DateTimeFormat('id-ID', { dateStyle: 'full', timeStyle: 'short' });
+const COLORS = ['#FFE53D', '#FF9CC2', '#7DE3C0', '#8FD0FF', '#FFB35C'];
+const colorFor = n => { let h = 0; for (const c of n.toLowerCase().trim()) h = (h * 31 + c.charCodeAt(0)) >>> 0; return COLORS[h % COLORS.length]; };
+class AppErr extends Error {}
+
+const ic = (p, s = 22) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+const I = {
+  mic: ic('<path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>', 24),
+  sliders: ic('<path d="M4 7h9M18 7h2M4 17h2M11 17h9"/><circle cx="15.5" cy="7" r="2.2"/><circle cx="8.5" cy="17" r="2.2"/>', 24),
+  back: ic('<path d="M15 5l-7 7 7 7"/>', 24),
+  x: ic('<path d="M6 6l12 12M18 6L6 18"/>', 24),
+  pause: ic('<path d="M8 5v14M16 5v14"/>'),
+  play: '<svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 3.5l14 8.5-14 8.5z"/></svg>',
+  flag: ic('<path d="M6 21V4M6 5h11l-2 4 2 4H6"/>'),
+  copy: ic('<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/>'),
+  share: ic('<path d="M12 15V4M8 8l4-4 4 4M5 13v6h14v-6"/>'),
+  retry: ic('<path d="M4 12a8 8 0 1 0 3-6.2M4 4v5h5"/>', 20),
+};
+
+/* ---------- penyimpanan ---------- */
+const mem = { sessions: new Map(), audio: new Map() };
+let db = null;
+const openDB = () => new Promise(res => {
+  try {
+    const r = indexedDB.open('catetin', 1);
+    r.onupgradeneeded = () => { r.result.createObjectStore('sessions', { keyPath: 'id' }); r.result.createObjectStore('audio'); };
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => res(null);
+  } catch (e) { res(null); }
+});
+const tx = (store, mode, fn) => new Promise((res, rej) => {
+  const t = db.transaction(store, mode); const rq = fn(t.objectStore(store));
+  t.oncomplete = () => res(rq && rq.result); t.onerror = t.onabort = () => rej(t.error);
+});
+const DB = {
+  all: async () => db ? tx('sessions', 'readonly', s => s.getAll()) : [...mem.sessions.values()],
+  put: async s => { if (!db) { mem.sessions.set(s.id, JSON.parse(JSON.stringify(s))); return; } return tx('sessions', 'readwrite', st => st.put(JSON.parse(JSON.stringify(s)))); },
+  del: async id => { if (!db) { mem.sessions.delete(id); return; } return tx('sessions', 'readwrite', st => st.delete(id)); },
+  putAudio: async (k, b) => { if (!db) { mem.audio.set(k, b); return; } return tx('audio', 'readwrite', st => st.put(b, k)); },
+  getAudio: async k => db ? tx('audio', 'readonly', st => st.get(k)) : mem.audio.get(k),
+  delAudio: async k => { if (!db) { mem.audio.delete(k); return; } return tx('audio', 'readwrite', st => st.delete(k)); },
+};
+
+const SKEY = 'catetin.settings';
+let settings = { key: '', model: 'whisper-large-v3-turbo', lang: 'id', chunkMin: 8 };
+try { const v = localStorage.getItem(SKEY); if (v) settings = { ...settings, ...JSON.parse(v) }; } catch (e) {}
+const saveSettings = () => { try { localStorage.setItem(SKEY, JSON.stringify(settings)); } catch (e) {} };
+
+const GROQ = 'https://api.groq.com/openai/v1';
+const LLM = 'llama-3.3-70b-versatile';
+
+/* ---------- state ---------- */
+const S = { view: 'home', sessions: [], filter: 'all', openId: null, tab: 'text', course: '', R: null, sumBusy: null, sumMsg: '' };
+const getS = id => S.sessions.find(s => s.id === id);
+
+/* ---------- data turunan ---------- */
+const segsOf = s => {
+  const out = [];
+  for (const c of s.chunks) {
+    if (c.status !== 'done') continue;
+    c.segments.forEach((g, i) => out.push({ k: `${c.idx}:${i}`, ci: c.idx, ls: g.s, s: c.start + g.s, e: c.start + g.e, t: g.t }));
+  }
+  return out;
+};
+const isHl = (s, g) => { const v = s.hl[g.k]; return v !== undefined ? v : s.marks.some(m => g.e >= m - 20 && g.s <= m + 2); };
+const parasOf = segs => {
+  const P = []; let cur = null;
+  for (const g of segs) {
+    if (!cur || g.ci !== cur.ci || g.s - cur.end > 3 || cur.len > 300) { cur = { ci: g.ci, ls: g.ls, s: g.s, end: g.e, len: 0, items: [] }; P.push(cur); }
+    cur.items.push(g); cur.len += g.t.length; cur.end = g.e;
+  }
+  return P;
+};
+const statOf = s => {
+  if (!s.chunks.length) return '';
+  if (s.chunks.some(c => c.status === 'working' || c.status === 'queued')) return 'busy';
+  if (s.chunks.some(c => c.status === 'error')) return 'fail';
+  return 'ok';
+};
+const plainText = s => {
+  let t = `${s.course}\n${DFL.format(new Date(s.createdAt))}\n\n`;
+  parasOf(segsOf(s)).forEach(p => { t += `[${fmtStamp(p.s)}] ${p.items.map(g => g.t).join(' ')}\n\n`; });
+  if (s.summary) t += `--- Ringkasan ---\n${s.summary}\n`;
+  return t.trim();
+};
+
+/* ---------- router & render ---------- */
+function go(view, id, opt = {}) {
+  S.view = view; S.openId = id || null; if (view === 'session') S.tab = 'text';
+  opt.replace ? history.replaceState({ v: view }, '') : history.pushState({ v: view }, '');
+  stopPlay(); render(false);
+}
+function render(keep) {
+  const y = keep ? window.scrollY : 0;
+  document.body.dataset.view = S.view;
+  $('meta[name=theme-color]').content = S.view === 'record' ? '#3A36F5' : '#F3F4FB';
+  $('#app').innerHTML = ({ home: vHome, record: vRecord, session: vSession, settings: vSettings }[S.view])();
+  if (S.view === 'record' && S.R) { fitCanvas(); updateTimer(); updateRecInfo(); }
+  window.scrollTo(0, y);
+}
+function refresh(sid) {
+  if (S.R) { updateRecInfo(); return; }
+  if (S.view === 'home' || (S.view === 'session' && S.openId === sid)) render(true);
+}
+window.addEventListener('popstate', () => {
+  if (S.R) { history.pushState({ v: 'record' }, ''); toast('Tekan Selesai dulu untuk berhenti merekam.'); return; }
+  stopPlay(); S.view = 'home'; S.openId = null; render(false);
+});
+
+let toastT;
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 3200);
+}
+function ask(msg, ok = 'Ya', cancel = 'Batal', danger = false) {
+  return new Promise(res => {
+    const root = $('#sheet-root');
+    root.innerHTML = `<div class="scrim" id="scrim"></div><div class="sheet" role="dialog" aria-modal="true"><p>${esc(msg)}</p><div class="row2"><button class="btn ${danger ? 'coral' : 'ink'}" id="ok">${esc(ok)}</button><button class="btn plain" id="no">${esc(cancel)}</button></div></div>`;
+    const done = v => { root.innerHTML = ''; res(v); };
+    $('#ok').onclick = () => done(true); $('#no').onclick = () => done(false); $('#scrim').onclick = () => done(false);
+    $('#ok').focus();
+  });
+}
+
+/* ---------- tampilan: beranda ---------- */
+function vHome() {
+  const all = S.sessions.slice().sort((a, b) => b.createdAt - a.createdAt);
+  const courses = [...new Set(all.map(s => s.course))];
+  if (S.filter !== 'all' && !courses.includes(S.filter)) S.filter = 'all';
+  const list = S.filter === 'all' ? all : all.filter(s => s.course === S.filter);
+  const chip = (v, label, c) => `<button class="chip" style="--c:${c || '#fff'}" aria-pressed="${S.filter === v}" data-act="filter" data-c="${esc(v)}">${c ? '<i></i>' : ''}${esc(label)}</button>`;
+  return `<main class="screen">
+    <header class="top"><div class="logo"><i></i>catetin</div><button class="ic" data-act="settings" aria-label="Pengaturan">${I.sliders}</button></header>
+    ${settings.key ? '' : `<button class="note" data-act="settings">Isi kunci Groq dulu supaya rekaman bisa jadi teks.<u>Buka Pengaturan</u></button>`}
+    ${courses.length > 1 ? `<div class="chips" role="group" aria-label="Filter mata kuliah">${chip('all', 'Semua')}${courses.map(c => chip(c, c, colorFor(c))).join('')}</div>` : ''}
+    ${list.length ? list.map(row).join('') : empty()}
+  </main>
+  <div class="dock"><button class="btn coral big" data-act="newRec">${I.mic}Rekam</button></div>`;
+}
+function row(s) {
+  const d = new Date(s.createdAt), st = statOf(s);
+  const first = segsOf(s).slice(0, 4).map(g => g.t).join(' ').slice(0, 150);
+  const prev = first || (st === 'busy' ? 'Sedang diubah jadi teks.' : 'Belum ada teks.');
+  const pill = st === 'busy' ? '<span class="pill busy">Memproses</span>' : st === 'fail' ? '<span class="pill fail">Perlu dicoba lagi</span>' : '';
+  return `<button class="row" style="--c:${colorFor(s.course)}" data-act="open" data-id="${s.id}">
+    <span class="tab"></span>
+    <span class="rb">
+      <span class="rt"><b>${esc(s.course)}</b>${pill}</span>
+      <span class="rm"><span>${DF.format(d)}, ${TF.format(d)}</span><span>${fmtDur(s.duration)}</span></span>
+      <span class="rp">${esc(prev)}</span>
+    </span></button>`;
+}
+function empty() {
+  return `<div class="empty">
+    <svg viewBox="0 0 200 64" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path id="zz" d="M12 32 L32 14 L52 50 L72 10 L92 54 L112 18 L132 46 L152 24 L172 40 L188 32" stroke="#15173D" stroke-width="17"/><path d="M12 32 L32 14 L52 50 L72 10 L92 54 L112 18 L132 46 L152 24 L172 40 L188 32" stroke="#FFE53D" stroke-width="9"/></g></svg>
+    <h2>Belum ada catatan</h2>
+    <p>Tekan Rekam saat kuliah mulai. Teksnya muncul otomatis beberapa menit kemudian.</p></div>`;
+}
+
+/* ---------- tampilan: rekam ---------- */
+function vRecord() {
+  if (!S.R) {
+    const recent = [...new Set(S.sessions.slice().sort((a, b) => b.createdAt - a.createdAt).map(s => s.course))].slice(0, 6);
+    return `<section class="screen rec">
+      <button class="ic" data-act="back" aria-label="Tutup">${I.x}</button>
+      <h1 class="q">Mata kuliah apa?</h1>
+      <input id="course" class="field" value="${esc(S.course)}" placeholder="Contoh: Statistika Dasar" autocomplete="off" maxlength="60" aria-label="Nama mata kuliah">
+      ${recent.length ? `<div class="recent">${recent.map(c => `<button class="cw" data-act="pickCourse" data-c="${esc(c)}">${esc(c)}</button>`).join('')}</div>` : ''}
+      <p class="hint">Taruh HP dekat dosen. Layar dibiarkan menyala selama merekam.</p>
+    </section>
+    <div class="dock"><button class="btn coral big" data-act="startRec">${I.mic}Mulai merekam</button></div>`;
+  }
+  const R = S.R;
+  return `<section class="screen rec live">
+    <div class="state"><span class="pulse${R.running ? '' : ' off'}" id="pulse"></span><span id="state">${R.running ? 'Merekam' : 'Dijeda'}</span></div>
+    <h2 class="course">${esc(R.session.course)}</h2>
+    <div class="timer" id="timer">00:00:00</div>
+    <canvas id="wave" aria-hidden="true"></canvas>
+    <p class="info" id="info"></p>
+    <div class="ctrls">
+      <button class="btn" data-act="pause" id="pauseBtn">${R.running ? I.pause + 'Jeda' : I.play + 'Lanjut'}</button>
+      <button class="btn yellow" data-act="mark">${I.flag}Tandai</button>
+      <button class="btn coral big wide" data-act="stopRec">Selesai</button>
+    </div>
+  </section>`;
+}
+
+/* ---------- tampilan: catatan ---------- */
+function vSession() {
+  const s = getS(S.openId);
+  if (!s) { S.view = 'home'; return vHome(); }
+  const total = s.chunks.length, done = s.chunks.filter(c => c.status === 'done').length;
+  const st = statOf(s), failed = s.chunks.find(c => c.status === 'error');
+  const segs = segsOf(s);
+  let banner = '';
+  if (st === 'busy') banner = `<div class="banner"><span>Mengubah rekaman jadi teks, ${done} dari ${total} bagian.</span><div class="prog"><i style="width:${Math.max(6, done / total * 100)}%"></i></div></div>`;
+  else if (st === 'fail') banner = `<div class="banner fail"><span>${esc(failed.error || 'Sebagian rekaman belum jadi teks.')} Rekaman aman di HP.</span><button class="btn small" data-act="retry">${I.retry}Coba lagi</button></div>`;
+
+  let body;
+  if (S.tab === 'sum') {
+    if (S.sumBusy === s.id) body = `<div class="sheetbox empty-sum"><p>${esc(S.sumMsg || 'Menyusun ringkasan')}</p><div class="prog"><i style="width:60%"></i></div></div>`;
+    else if (s.summary) body = `<div class="sheetbox sum">${md(s.summary)}</div><div class="acts"><button class="btn small" data-act="summarize">Buat ulang</button><button class="btn small" data-act="copySum">${I.copy}Salin ringkasan</button></div>`;
+    else body = `<div class="sheetbox empty-sum"><p>Ringkasan berisi isi pokok, istilah penting, dan soal latihan dari teks kuliah ini.</p><button class="btn coral" data-act="summarize" ${segs.length && st !== 'busy' ? '' : 'disabled'}>Buat ringkasan</button></div>`;
+  } else if (!segs.length) {
+    body = `<div class="page"><p class="blank">${st === 'busy' ? 'Teks muncul di sini setelah bagian pertama selesai.' : st === 'fail' ? 'Teks belum tersedia karena rekaman belum berhasil diproses.' : 'Tidak ada ucapan yang terdeteksi di rekaman ini.'}</p></div>`;
+  } else {
+    body = `<div class="page">${parasOf(segs).map(p => `<div class="para">
+      <button class="tsb" data-act="play" data-ci="${p.ci}" data-t="${p.ls}" data-abs="${p.s}" aria-label="Putar dari menit ${fmtStamp(p.s)}">${I.play}<span>${fmtStamp(p.s)}</span></button>
+      <p class="txt">${p.items.map(g => `<span class="seg${isHl(s, g) ? ' hl' : ''}" data-act="hl" data-k="${g.k}">${esc(g.t)} </span>`).join('')}</p></div>`).join('')}</div>`;
+  }
+  return `<main class="screen">
+    <header class="bar"><button class="ic" data-act="back" aria-label="Kembali">${I.back}</button><h1>${esc(s.course)}</h1>
+      <button class="ic" data-act="copy" aria-label="Salin teks">${I.copy}</button><button class="ic" data-act="share" aria-label="Bagikan teks">${I.share}</button></header>
+    <div class="meta"><span>${DF.format(new Date(s.createdAt))}, ${TF.format(new Date(s.createdAt))}</span><span>${fmtDur(s.duration)}</span></div>
+    ${banner}
+    <div class="sc tabs" role="tablist"><button role="tab" aria-selected="${S.tab === 'text'}" data-act="tab" data-t="text">Teks</button><button role="tab" aria-selected="${S.tab === 'sum'}" data-act="tab" data-t="sum">Ringkasan</button></div>
+    ${body}
+    <button class="del" data-act="del">Hapus catatan ini</button>
+  </main>`;
+}
+function md(t) {
+  const out = []; let mode = '';
+  const bold = x => x.replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+  const close = () => { if (mode) out.push(`</${mode}>`); mode = ''; };
+  for (let ln of esc(t).split('\n')) {
+    ln = ln.trim();
+    if (!ln) { close(); continue; }
+    if (/^#{1,4}\s/.test(ln)) { close(); out.push(`<h3>${bold(ln.replace(/^#{1,4}\s/, ''))}</h3>`); }
+    else if (/^[-*•]\s/.test(ln)) { if (mode !== 'ul') { close(); out.push('<ul>'); mode = 'ul'; } out.push(`<li>${bold(ln.slice(2))}</li>`); }
+    else if (/^\d+[.)]\s/.test(ln)) { if (mode !== 'ol') { close(); out.push('<ol>'); mode = 'ol'; } out.push(`<li>${bold(ln.replace(/^\d+[.)]\s/, ''))}</li>`); }
+    else { close(); out.push(`<p>${bold(ln)}</p>`); }
+  }
+  close(); return out.join('');
+}
+
+/* ---------- tampilan: pengaturan ---------- */
+function vSettings() {
+  const sc = (k, opts, cur) => `<div class="sc" role="radiogroup">${opts.map(([v, l]) => `<button role="radio" aria-checked="${String(cur) === String(v)}" data-act="set" data-k="${k}" data-v="${v}">${l}</button>`).join('')}</div>`;
+  return `<main class="screen">
+    <header class="bar"><button class="ic" data-act="back" aria-label="Kembali">${I.back}</button><h1>Pengaturan</h1></header>
+    <div class="fl"><label for="s-key">Kunci Groq</label>
+      <div class="kf"><input id="s-key" type="password" value="${esc(settings.key)}" placeholder="gsk_..." autocomplete="off" autocapitalize="off" spellcheck="false"><button data-act="showKey" id="showKey">Tampilkan</button></div>
+      <small>Daftar gratis di console.groq.com, lalu buat API key. Kunci hanya disimpan di HP ini.</small></div>
+    <div class="fl"><span>Model transkrip</span>${sc('model', [['whisper-large-v3-turbo', 'Cepat'], ['whisper-large-v3', 'Paling akurat']], settings.model)}<small>Model cepat sudah cukup untuk kebanyakan kuliah.</small></div>
+    <div class="fl"><span>Bahasa kuliah</span>${sc('lang', [['id', 'Indonesia'], ['en', 'English'], ['auto', 'Otomatis']], settings.lang)}</div>
+    <div class="fl"><span>Panjang tiap bagian</span>${sc('chunkMin', [[5, '5 menit'], [8, '8 menit'], [10, '10 menit']], settings.chunkMin)}<small>Tiap bagian dikirim begitu selesai, jadi teks muncul sambil kuliah berjalan.</small></div>
+    <button class="del" data-act="wipe">Hapus semua catatan</button>
+  </main>`;
+}
+
+/* ---------- perekaman ---------- */
+const NPTS = 40;
+const elapsed = () => { const R = S.R; return R ? R.accum + (R.running ? (performance.now() - R.t0) / 1000 : 0) : 0; };
+const pickMime = () => ['audio/webm;codecs=opus', 'audio/webm', 'audio/mp4', 'audio/ogg;codecs=opus'].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
+
+async function startRec() {
+  if (!navigator.mediaDevices || !window.MediaRecorder) { toast('Perekam suara tidak tersedia di perangkat ini.'); return; }
+  const course = (S.course || '').trim() || 'Kuliah tanpa judul';
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: true } }); }
+  catch (e) { toast('Mikrofon tidak bisa dipakai. Izinkan akses mikrofon untuk Catetin.'); return; }
+  const session = { id: uid(), course, createdAt: Date.now(), duration: 0, status: 'recording', chunks: [], marks: [], hl: {}, summary: '' };
+  S.sessions.unshift(session); await DB.put(session);
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const an = ctx.createAnalyser(); an.fftSize = 1024; ctx.createMediaStreamSource(stream).connect(an);
+  const R = S.R = { session, stream, ctx, an, buf: new Uint8Array(an.fftSize), accum: 0, t0: performance.now(), running: true, cur: null, nextIdx: 0, pending: [], wake: null, level: 0, hist: [], lastPush: 0 };
+  stream.getAudioTracks()[0].onended = () => { if (S.R === R && R.running) { R.accum += (performance.now() - R.t0) / 1000; R.running = false; R.lost = true; toast('Mikrofon berhenti. Tekan Selesai untuk menyimpan rekaman.'); const st = $('#state'); if (st) st.textContent = 'Terhenti'; } };
+  startRecorder(); acquireWake();
+  if (!settings.key) toast('Kunci Groq belum diisi. Rekaman tetap disimpan, teksnya dibuat setelah kunci diisi.');
+  R.tick = setInterval(tick, 500); render(false); R.raf = requestAnimationFrame(drawLoop);
+}
+function startRecorder() {
+  const R = S.R, session = R.session, mime = pickMime();
+  const mr = new MediaRecorder(R.stream, mime ? { mimeType: mime, audioBitsPerSecond: 32000 } : { audioBitsPerSecond: 32000 });
+  const cur = { mr, idx: R.nextIdx++, startSec: elapsed(), parts: [], mime: mr.mimeType || mime || 'audio/webm' };
+  cur.done = new Promise(r => { cur.resolve = r; });
+  mr.ondataavailable = e => { if (e.data && e.data.size) cur.parts.push(e.data); };
+  mr.onstop = () => { if (cur.endSec === undefined) cur.endSec = elapsed(); finishChunk(session, cur); };
+  mr.start(1000); R.cur = cur;
+}
+async function finishChunk(session, cur) {
+  try {
+    const blob = new Blob(cur.parts, { type: cur.mime });
+    const dur = cur.endSec - cur.startSec;
+    if (dur < 1.5 || blob.size < 500) return;
+    await DB.putAudio(`${session.id}:${cur.idx}`, blob);
+    session.chunks.push({ idx: cur.idx, start: cur.startSec, dur, status: 'queued', segments: [], mime: cur.mime });
+    session.chunks.sort((a, b) => a.idx - b.idx);
+    await DB.put(session);
+    enqueue(session.id, cur.idx);
+  } finally { cur.resolve(); }
+}
+function tick() {
+  const R = S.R; if (!R) return;
+  updateTimer();
+  if (R.running && elapsed() - R.cur.startSec >= settings.chunkMin * 60) {
+    const old = R.cur; old.endSec = elapsed(); R.pending.push(old.done);
+    old.mr.stop(); startRecorder();
+  }
+}
+function updateTimer() { const el = $('#timer'); if (el) el.textContent = fmtClock(elapsed()); }
+function updateRecInfo() {
+  const R = S.R, el = $('#info'); if (!R || !el) return;
+  const s = R.session, done = s.chunks.filter(c => c.status === 'done').length, p = [];
+  if (s.marks.length) p.push(`${s.marks.length} momen ditandai`);
+  if (s.chunks.length) p.push(`${done} dari ${s.chunks.length} bagian sudah jadi teks`);
+  el.textContent = p.join(', ') || 'Tekan Tandai saat dosen menjelaskan hal penting.';
+}
+function togglePause() {
+  const R = S.R; if (!R || R.lost) return;
+  const mr = R.cur.mr;
+  if (R.running) { try { mr.pause(); } catch (e) {} R.accum += (performance.now() - R.t0) / 1000; R.running = false; }
+  else { try { mr.resume(); } catch (e) {} R.t0 = performance.now(); R.running = true; }
+  $('#pauseBtn').innerHTML = R.running ? I.pause + 'Jeda' : I.play + 'Lanjut';
+  $('#state').textContent = R.running ? 'Merekam' : 'Dijeda';
+  $('#pulse').classList.toggle('off', !R.running);
+}
+function mark() {
+  const R = S.R; if (!R) return;
+  const t = Math.round(elapsed()); R.session.marks.push(t); DB.put(R.session);
+  if (navigator.vibrate) navigator.vibrate(25);
+  toast(`Ditandai di menit ${fmtStamp(t)}`); updateRecInfo();
+}
+async function stopRec() {
+  const R = S.R; if (!R) return;
+  if (!await ask('Selesai merekam?', 'Selesai', 'Lanjut merekam')) return;
+  clearInterval(R.tick); cancelAnimationFrame(R.raf);
+  const total = elapsed(); R.cur.endSec = total; R.pending.push(R.cur.done); R.running = false;
+  try { if (R.cur.mr.state !== 'inactive') R.cur.mr.stop(); } catch (e) {}
+  await Promise.race([Promise.all(R.pending), sleep(5000)]);
+  R.stream.getTracks().forEach(t => t.stop()); R.ctx.close().catch(() => {});
+  if (R.wake) R.wake.release().catch(() => {});
+  const session = R.session; S.R = null;
+  if (!session.chunks.length) {
+    S.sessions = S.sessions.filter(s => s !== session); await DB.del(session.id);
+    toast('Rekaman terlalu pendek, jadi tidak disimpan.'); go('home', null, { replace: true }); return;
+  }
+  session.duration = Math.round(total); session.status = 'done'; await DB.put(session);
+  go('session', session.id, { replace: true });
+}
+async function acquireWake() { try { if ('wakeLock' in navigator && S.R) S.R.wake = await navigator.wakeLock.request('screen'); } catch (e) {} }
+document.addEventListener('visibilitychange', () => { if (!document.hidden && S.R && (!S.R.wake || S.R.wake.released)) acquireWake(); });
+
+function fitCanvas() { const cv = $('#wave'); if (!cv) return; const d = Math.min(2, window.devicePixelRatio || 1); cv.width = cv.clientWidth * d; cv.height = cv.clientHeight * d; cv._d = d; }
+window.addEventListener('resize', fitCanvas);
+function drawLoop(ts) {
+  const R = S.R; if (!R) return;
+  R.raf = requestAnimationFrame(drawLoop);
+  if (ts - R.lastPush > 70) {
+    R.lastPush = ts; let v = 0;
+    if (R.running) { R.an.getByteTimeDomainData(R.buf); let sum = 0; for (let i = 0; i < R.buf.length; i++) { const x = (R.buf[i] - 128) / 128; sum += x * x; } v = Math.min(1, Math.sqrt(sum / R.buf.length) * 5); }
+    R.level = R.level * .45 + v * .55; R.hist.push(R.level); if (R.hist.length > NPTS) R.hist.shift();
+  }
+  const cv = $('#wave'); if (!cv) return;
+  const g = cv.getContext('2d'), W = cv.width, H = cv.height, d = cv._d || 1, mid = H / 2, dx = W / (NPTS - 1), n = R.hist.length;
+  g.clearRect(0, 0, W, H); g.lineCap = 'round'; g.lineJoin = 'round';
+  const path = () => { g.beginPath(); R.hist.forEach((v, i) => { const x = W - (n - 1 - i) * dx, y = mid + (i % 2 ? 1 : -1) * (5 * d + v * (mid - 14 * d)); i ? g.lineTo(x, y) : g.moveTo(x, y); }); };
+  path(); g.strokeStyle = '#15173D'; g.lineWidth = 18 * d; g.stroke();
+  path(); g.strokeStyle = '#FFE53D'; g.lineWidth = 10 * d; g.stroke();
+}
+
+/* ---------- transkrip ---------- */
+let Q = Promise.resolve();
+function enqueue(sid, idx) {
+  const c = getS(sid)?.chunks.find(c => c.idx === idx); if (!c) return;
+  c.status = 'queued'; delete c.error;
+  Q = Q.then(() => runChunk(sid, idx)).catch(() => {});
+}
+async function runChunk(sid, idx) {
+  const s = getS(sid); if (!s) return;
+  const c = s.chunks.find(x => x.idx === idx); if (!c || c.status === 'done') return;
+  c.status = 'working'; refresh(sid);
+  try {
+    if (!settings.key) throw new AppErr('Kunci Groq belum diisi. Isi di Pengaturan, lalu coba lagi.');
+    const blob = await DB.getAudio(`${sid}:${idx}`);
+    if (!blob) throw new AppErr('File rekaman tidak ditemukan.');
+    c.segments = await transcribe(blob, s.course, c.dur); c.status = 'done'; delete c.error;
+  } catch (e) { c.status = 'error'; c.error = e instanceof AppErr ? e.message : 'Terjadi masalah saat mengubah rekaman jadi teks.'; }
+  await DB.put(s); refresh(sid);
+}
+async function transcribe(blob, course, dur) {
+  const ext = blob.type.includes('mp4') ? 'm4a' : blob.type.includes('ogg') ? 'ogg' : 'webm';
+  for (let a = 0; a < 4; a++) {
+    const fd = new FormData();
+    fd.append('file', blob, `rekaman.${ext}`); fd.append('model', settings.model);
+    fd.append('response_format', 'verbose_json'); fd.append('temperature', '0');
+    if (settings.lang !== 'auto') fd.append('language', settings.lang);
+    fd.append('prompt', `Kuliah ${course}.`);
+    let r;
+    try { r = await fetch(`${GROQ}/audio/transcriptions`, { method: 'POST', headers: { Authorization: `Bearer ${settings.key}` }, body: fd }); }
+    catch (e) { throw new AppErr('Tidak ada koneksi internet.'); }
+    if (r.status === 429) {
+      const w = +r.headers.get('retry-after') || 20;
+      if (w > 90) throw new AppErr(`Batas pemakaian Groq sedang penuh. Coba lagi sekitar ${Math.ceil(w / 60)} menit.`);
+      await sleep((w + 1) * 1000); continue;
+    }
+    if (r.status === 401) throw new AppErr('Kunci Groq ditolak. Cek lagi di Pengaturan.');
+    if (!r.ok) { let m = ''; try { m = (await r.json()).error.message; } catch (e) {} throw new AppErr(`Groq menolak rekaman ini${m ? ': ' + m : '.'}`); }
+    const j = await r.json();
+    if (Array.isArray(j.segments)) return j.segments.filter(g => (g.no_speech_prob ?? 0) < .8 && g.text.trim()).map(g => ({ s: +g.start, e: +g.end, t: g.text.trim() }));
+    return j.text && j.text.trim() ? [{ s: 0, e: dur, t: j.text.trim() }] : [];
+  }
+  throw new AppErr('Batas pemakaian Groq sedang penuh. Coba lagi beberapa menit lagi.');
+}
+
+/* ---------- ringkasan ---------- */
+async function groqChat(messages) {
+  for (let a = 0; a < 5; a++) {
+    let r;
+    try { r = await fetch(`${GROQ}/chat/completions`, { method: 'POST', headers: { Authorization: `Bearer ${settings.key}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ model: LLM, messages, temperature: .3, max_tokens: 1200 }) }); }
+    catch (e) { throw new AppErr('Tidak ada koneksi internet.'); }
+    if (r.status === 429) { const w = Math.min(70, (+r.headers.get('retry-after') || 15) + 1); S.sumMsg = 'Menunggu giliran Groq, sebentar lagi lanjut.'; render(true); await sleep(w * 1000); continue; }
+    if (r.status === 401) throw new AppErr('Kunci Groq ditolak. Cek lagi di Pengaturan.');
+    if (!r.ok) throw new AppErr('Groq gagal membuat ringkasan. Coba lagi nanti.');
+    return (await r.json()).choices[0].message.content.trim();
+  }
+  throw new AppErr('Batas pemakaian Groq sedang penuh. Coba lagi beberapa menit lagi.');
+}
+const SYS = 'Kamu asisten yang merangkum catatan kuliah untuk mahasiswa. Tulis dalam bahasa Indonesia yang jelas dan ringkas. Jangan mengarang isi yang tidak ada di transkrip. Transkrip berasal dari speech-to-text sehingga ada salah dengar; benahi istilah yang jelas keliru hanya jika konteksnya pasti.';
+const FORMAT = 'Format jawaban:\n## Ringkasan\n(3-4 kalimat)\n## Poin utama\n- poin-poin padat\n## Istilah penting\n- **istilah**: arti singkat\n## Latihan\n1. tiga pertanyaan latihan';
+async function summarize() {
+  const s = getS(S.openId); if (!s || S.sumBusy) return;
+  if (!settings.key) { toast('Kunci Groq belum diisi. Isi di Pengaturan dulu.'); return; }
+  const words = segsOf(s).map(g => g.t).join(' ').split(/\s+/), parts = [];
+  for (let i = 0; i < words.length; i += 2200) parts.push(words.slice(i, i + 2200).join(' '));
+  S.sumBusy = s.id; S.sumMsg = 'Menyusun ringkasan'; render(true);
+  try {
+    let out;
+    if (parts.length === 1) out = await groqChat([{ role: 'system', content: SYS }, { role: 'user', content: `Mata kuliah: ${s.course}\n\nBuat catatan dari transkrip ini.\n${FORMAT}\n\nTranskrip:\n${parts[0]}` }]);
+    else {
+      const partial = [];
+      for (let i = 0; i < parts.length; i++) {
+        S.sumMsg = `Meringkas bagian ${i + 1} dari ${parts.length}`; render(true);
+        partial.push(await groqChat([{ role: 'system', content: SYS }, { role: 'user', content: `Mata kuliah: ${s.course}\n\nRingkas bagian transkrip ini jadi maksimal 8 poin padat. Pertahankan istilah, definisi, contoh, dan angka penting.\n\nTranskrip:\n${parts[i]}` }]));
+      }
+      S.sumMsg = 'Menyusun catatan akhir'; render(true);
+      out = await groqChat([{ role: 'system', content: SYS }, { role: 'user', content: `Mata kuliah: ${s.course}\n\nGabungkan ringkasan bagian-bagian kuliah berikut jadi satu catatan utuh.\n${FORMAT}\n\nRingkasan bagian:\n${partial.join('\n\n')}` }]);
+    }
+    s.summary = out; await DB.put(s);
+  } catch (e) { toast(e instanceof AppErr ? e.message : 'Ringkasan gagal dibuat.'); }
+  S.sumBusy = null; render(true);
+}
+
+/* ---------- pemutar ---------- */
+const player = $('#player'); let playUrl = null;
+async function playAt(sid, ci, t, abs) {
+  const blob = await DB.getAudio(`${sid}:${ci}`);
+  if (!blob) { toast('File rekaman tidak ditemukan.'); return; }
+  if (playUrl) URL.revokeObjectURL(playUrl);
+  playUrl = URL.createObjectURL(blob); player.src = playUrl;
+  const start = () => { player.currentTime = Math.max(0, t - 1); player.play().catch(() => {}); };
+  player.onloadedmetadata = () => {
+    if (player.duration === Infinity) { player.currentTime = 1e101; player.ontimeupdate = () => { player.ontimeupdate = null; start(); }; } else start();
+  };
+  player.onended = stopPlay;
+  $('#miniT').textContent = `Memutar dari menit ${fmtStamp(abs)}`; $('#mini').hidden = false;
+}
+function stopPlay() { try { player.pause(); } catch (e) {} $('#mini').hidden = true; }
+
+/* ---------- aksi ---------- */
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); return true; }
+  catch (e) { const ta = document.createElement('textarea'); ta.value = t; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand('copy'); } catch (_) {} ta.remove(); return ok; }
+}
+const ACT = {
+  open: el => go('session', el.dataset.id),
+  filter: el => { S.filter = el.dataset.c; render(true); },
+  settings: () => go('settings'),
+  newRec: () => { S.course = ''; go('record'); },
+  back: () => history.back(),
+  pickCourse: el => { S.course = el.dataset.c; const i = $('#course'); if (i) i.value = S.course; },
+  startRec, pause: togglePause, mark, stopRec,
+  tab: el => { S.tab = el.dataset.t; render(true); },
+  play: el => playAt(S.openId, +el.dataset.ci, +el.dataset.t, +el.dataset.abs),
+  stopPlay,
+  hl: el => {
+    const s = getS(S.openId), g = segsOf(s).find(x => x.k === el.dataset.k); if (!g) return;
+    const v = !isHl(s, g); s.hl[g.k] = v; el.classList.toggle('hl', v); DB.put(s);
+  },
+  copy: async () => { const s = getS(S.openId); toast(await copyText(plainText(s)) ? 'Teks disalin.' : 'Teks gagal disalin.'); },
+  copySum: async () => { const s = getS(S.openId); toast(await copyText(s.summary) ? 'Ringkasan disalin.' : 'Ringkasan gagal disalin.'); },
+  share: async () => {
+    const s = getS(S.openId), text = plainText(s);
+    if (navigator.share) { try { await navigator.share({ title: s.course, text }); } catch (e) {} return; }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type: 'text/plain' }));
+    a.download = (s.course.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'catatan') + '.txt'; a.click();
+  },
+  retry: () => { const s = getS(S.openId); s.chunks.filter(c => c.status === 'error').forEach(c => enqueue(s.id, c.idx)); render(true); },
+  summarize,
+  del: async () => {
+    const s = getS(S.openId);
+    if (!await ask('Hapus catatan ini? Rekaman dan teksnya hilang dari HP.', 'Hapus', 'Batal', true)) return;
+    await removeSession(s); toast('Catatan dihapus.'); history.back();
+  },
+  set: el => { const k = el.dataset.k; settings[k] = k === 'chunkMin' ? +el.dataset.v : el.dataset.v; saveSettings(); render(true); },
+  showKey: el => { const i = $('#s-key'), show = i.type === 'password'; i.type = show ? 'text' : 'password'; el.textContent = show ? 'Sembunyikan' : 'Tampilkan'; },
+  wipe: async () => {
+    if (!await ask('Hapus semua catatan? Semua rekaman dan teks hilang dari HP.', 'Hapus semua', 'Batal', true)) return;
+    for (const s of S.sessions.slice()) await removeSession(s);
+    toast('Semua catatan dihapus.');
+  },
+};
+async function removeSession(s) {
+  for (const c of s.chunks) await DB.delAudio(`${s.id}:${c.idx}`);
+  await DB.del(s.id); S.sessions = S.sessions.filter(x => x !== s);
+}
+document.addEventListener('click', e => { const el = e.target.closest('[data-act]'); if (el && ACT[el.dataset.act]) ACT[el.dataset.act](el, e); });
+document.addEventListener('input', e => {
+  if (e.target.id === 'course') S.course = e.target.value;
+  if (e.target.id === 's-key') { settings.key = e.target.value.trim(); saveSettings(); }
+});
+
+/* ---------- mulai ---------- */
+if (!window.Capacitor && 'serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(() => {});
+(async function init() {
+  db = await openDB();
+  S.sessions = (await DB.all()) || [];
+  for (const s of S.sessions.slice()) {
+    if (!s.chunks.length && s.status === 'recording') { await DB.del(s.id); S.sessions = S.sessions.filter(x => x !== s); continue; }
+    let ch = false;
+    if (s.status === 'recording') { s.status = 'done'; s.duration = s.duration || Math.round(Math.max(...s.chunks.map(c => c.start + c.dur))); ch = true; }
+    for (const c of s.chunks) if (c.status === 'queued' || c.status === 'working') { c.status = 'error'; c.error = 'Proses sempat terhenti sebelum selesai.'; ch = true; }
+    if (ch) await DB.put(s);
+  }
+  history.replaceState({ v: 'home' }, ''); render(false);
+})();
+})();
+</script>
+</body>
+</html>
