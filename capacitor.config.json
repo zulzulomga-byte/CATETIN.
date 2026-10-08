@@ -1,6 +1,0 @@
-{
-  "appId": "com.juls.catetin",
-  "appName": "Catetin",
-  "webDir": "www",
-  "server": { "androidScheme": "https" }
-}
